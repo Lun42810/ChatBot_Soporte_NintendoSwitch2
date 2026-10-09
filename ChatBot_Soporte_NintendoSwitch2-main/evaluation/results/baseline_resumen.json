@@ -1,0 +1,32 @@
+{
+  "label": "baseline",
+  "config": {
+    "chunk_size": 500,
+    "chunk_overlap": 50,
+    "top_k": 5,
+    "min_score": 0.0,
+    "embedding_model": "sentence-transformers/paraphrase-multilingual-MiniLM-L12-v2"
+  },
+  "judge_model": "openai/gpt-oss-120b",
+  "completo": true,
+  "ragas_all": {
+    "faithfulness": 0.596,
+    "answer_relevancy": 0.432,
+    "context_precision": 0.522,
+    "context_recall": 0.542
+  },
+  "ragas_in_scope": {
+    "faithfulness": 0.728,
+    "answer_relevancy": 0.571,
+    "context_precision": 0.696,
+    "context_recall": 0.722
+  },
+  "nan_count": {
+    "faithfulness": 0,
+    "answer_relevancy": 0,
+    "context_precision": 0,
+    "context_recall": 0
+  },
+  "abstention_rate_out_of_scope": 1.0,
+  "false_abstention_rate_in_scope": 0.2
+}

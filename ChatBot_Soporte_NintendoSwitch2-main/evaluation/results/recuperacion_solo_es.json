@@ -1,0 +1,8 @@
+{
+  "label": "solo_es",
+  "top_k": 5,
+  "hit_rate": 0.8,
+  "top1_correcto": 0.467,
+  "pct_manual_correcto_medio": 37.3,
+  "pct_espanol_medio": 100.0
+}

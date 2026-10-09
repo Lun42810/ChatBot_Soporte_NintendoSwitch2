@@ -1,0 +1,16 @@
+﻿id,question,expected,hit,rank,pct_manual_correcto,pct_espanol,top1
+1,¿Cómo se conecta la cámara a la consola?,NSwitch2_Information_Camera_EUR.pdf,True,1.0,100,0,NSwitch2_Information_Camera_EUR.pdf
+2,¿Para qué sirve el obturador de privacidad de la cámara y cómo sé si la cámara está en funcionamiento?,NSwitch2_Information_Camera_EUR.pdf,True,1.0,100,20,NSwitch2_Information_Camera_EUR.pdf
+3,¿En qué rango de temperatura funciona el adaptador de corriente y qué debo hacer si no lo voy a usar durante mucho tiempo?,NSwitch2_Information_ACAdapter_EUR.pdf,True,2.0,40,20,NSwitch2_ImportantInformation_EUR.pdf
+4,¿Qué precaución hay que tener con las rejillas de ventilación de la base?,NSwitch2_Information_DockSet_EUR.pdf,True,2.0,40,20,NSwitch2_ImportantInformation_EUR.pdf
+5,¿Cómo se coloca el protector de pantalla?,NSwitch2_Information_CarryingCaseAndScreenProtector_EUR.pdf,True,1.0,100,0,NSwitch2_Information_CarryingCaseAndScreenProtector_EUR.pdf
+6,¿Qué debo hacer antes de guardar la consola en la funda?,NSwitch2_Information_CarryingCaseAndScreenProtector_EUR.pdf,True,3.0,20,20,NSwitch2_ImportantInformation_EUR.pdf
+7,¿Cómo se carga con el soporte de carga de los Joy-Con 2?,NSwitch2_Information_JoyCon2ChargingGrip_EUR.pdf,False,,0,0,NSwitch2_ImportantInformation_EUR.pdf
+8,¿Qué precauciones hay que seguir al usar un Joy-Con 2 como ratón?,NSwitch2_Information_JoyCon2_EUR.pdf,True,4.0,20,40,NSwitch2_ImportantInformation_EUR.pdf
+9,¿Cómo se desactiva la conexión Bluetooth de los Joy-Con 2?,NSwitch2_Information_JoyCon2_EUR.pdf,True,4.0,20,20,NSwitch2_Information_ProController_EUR.pdf
+10,¿Qué precauciones indica el manual del volante Joy-Con 2?,NSwitch2_Information_JoyCon2Wheel_EUR.pdf,False,,0,0,NSwitch2_ImportantInformation_EUR.pdf
+11,¿Cómo se activa el modo reposo y cómo se apaga la consola?,NSwitch2_ImportantInformation_EUR.pdf,True,1.0,80,40,NSwitch2_ImportantInformation_EUR.pdf
+12,¿Con qué frecuencia recomienda el manual hacer pausas al jugar?,NSwitch2_ImportantInformation_EUR.pdf,True,1.0,100,0,NSwitch2_ImportantInformation_EUR.pdf
+13,¿Cómo funciona el control parental de la consola?,NSwitch2_ImportantInformation_EUR.pdf,True,1.0,100,20,NSwitch2_ImportantInformation_EUR.pdf
+14,¿Cómo se carga y se sincroniza el mando Pro de Nintendo Switch 2?,NSwitch2_Information_ProController_EUR.pdf,True,3.0,20,0,NSwitch2_NintendoGameCubeController_EUR.pdf
+15,¿Cada cuánto hay que cargar la batería del mando de Nintendo GameCube y qué ocurre si no se usa durante mucho tiempo?,NSwitch2_NintendoGameCubeController_EUR.pdf,True,1.0,60,20,NSwitch2_NintendoGameCubeController_EUR.pdf
