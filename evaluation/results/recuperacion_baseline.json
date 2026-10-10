@@ -1,0 +1,8 @@
+{
+  "label": "baseline",
+  "top_k": 5,
+  "hit_rate": 0.867,
+  "top1_correcto": 0.467,
+  "pct_manual_correcto_medio": 53.3,
+  "pct_espanol_medio": 14.7
+}

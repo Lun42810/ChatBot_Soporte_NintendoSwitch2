@@ -1,0 +1,16 @@
+﻿id,esperado,fragmentos_del_manual_correcto,llego,se_abstuvo,faithfulness,answer_relevancy,context_precision,context_recall,otros_manuales
+1,Information_Camera,5/5,True,False,1.0,0.81,0.7,0.5,
+2,Information_Camera,5/5,True,False,0.75,0.97,1.0,1.0,
+3,Information_ACAdapter,2/5,True,False,0.25,0.0,0.0,0.5,ImportantInformation
+4,Information_DockSet,2/5,True,False,1.0,0.75,1.0,1.0,ImportantInformation
+5,Information_CarryingCaseAndScreenProtector,5/5,True,False,1.0,0.76,1.0,1.0,
+6,Information_CarryingCaseAndScreenProtector,1/5,True,False,0.67,0.38,0.33,0.5,"ImportantInformation, Information_ProController"
+7,Information_JoyCon2ChargingGrip,0/1,False,True,1.0,0.0,0.0,0.0,nan
+8,Information_JoyCon2,1/5,True,False,1.0,0.88,1.0,1.0,ImportantInformation
+9,Information_JoyCon2,0/1,False,True,0.0,0.0,0.95,1.0,nan
+10,Information_JoyCon2Wheel,0/1,False,True,1.0,0.0,0.0,0.0,nan
+11,ImportantInformation,4/5,True,False,0.67,0.84,0.76,1.0,Information_CarryingCaseAndScreenProtector
+12,ImportantInformation,5/5,True,False,0.29,0.63,1.0,1.0,
+13,ImportantInformation,5/5,True,False,1.0,0.8,1.0,0.67,
+14,Information_ProController,1/5,True,False,0.8,0.97,1.0,0.67,"ImportantInformation, Information_DockSet, NintendoGameCubeController"
+15,NintendoGameCubeController,3/5,True,False,0.5,0.77,0.7,1.0,"ImportantInformation, Information_ProController"

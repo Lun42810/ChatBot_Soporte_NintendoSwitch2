@@ -1,0 +1,8 @@
+{
+  "label": "solo_encabezado",
+  "top_k": 5,
+  "hit_rate": 1.0,
+  "top1_correcto": 0.8,
+  "pct_manual_correcto_medio": 73.3,
+  "pct_espanol_medio": 8.0
+}

@@ -1,13 +1,26 @@
 services:
   - type: web
     name: nintendo-rag-chatbot
-    runtime: python
-    buildCommand: pip install -r requirements.txt
-    startCommand: gunicorn app:app --bind 0.0.0.0:$PORT --timeout 180
+    env: python
+    buildCommand: pip install -r requirements.txt && python ingest.py
+    startCommand: gunicorn app:app --bind 0.0.0.0:$PORT --workers 1 --threads 4 --timeout 180
+    healthCheckPath: /health
     envVars:
+      - key: PYTHON_VERSION
+        value: 3.12.8
       - key: GROQ_API_KEY
         sync: false
       - key: GROQ_MODEL
-        value: openai/gpt-oss-120b
+        value: qwen/qwen3.8-27b
       - key: EMBEDDING_MODEL
         value: sentence-transformers/paraphrase-multilingual-MiniLM-L12-v2
+      - key: CHUNK_SIZE
+        value: "500"
+      - key: CHUNK_OVERLAP
+        value: "50"
+      - key: TOP_K
+        value: "5"
+      - key: LANGUAGES
+        value: "es"
+      - key: HF_HOME
+        value: /opt/render/project/src/.hf_cache

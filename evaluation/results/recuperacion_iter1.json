@@ -1,0 +1,8 @@
+{
+  "label": "iter1",
+  "top_k": 5,
+  "hit_rate": 0.933,
+  "top1_correcto": 0.733,
+  "pct_manual_correcto_medio": 52.0,
+  "pct_espanol_medio": 100.0
+}

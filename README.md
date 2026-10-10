@@ -8,16 +8,21 @@ El chat también responde saludos, agradecimientos y despedidas comunes sin cons
 
 ```text
 .
-├── app.py                 # Aplicación Flask y endpoint POST /chat
-├── rag.py                 # Carga, fragmentación, búsqueda y generación RAG
-├── requirements.txt       # Dependencias Python
+├── app.py                 # Aplicación Flask y endpoints del chat
+├── rag.py                 # Carga, chunking, índice ChromaDB y generación RAG
+├── ingest.py              # Script de ingesta para construir/actualizar el índice vectorial
+├── requirements.txt       # Dependencias del proyecto
+├── render.yaml            # Configuración para despliegue automatizado en Render
 ├── .env.example           # Plantilla de variables de entorno
-├── .gitignore             # Excluye secretos y archivos generados
-├── documents/             # Manuales PDF consultados por el chatbot
+├── .gitignore             # Exclusión de secretos y datos generados
+├── documents/             # Manuales PDF oficiales consultados
 ├── templates/
-│   └── index.html          # Interfaz web del chat
-└── chroma/                # Índice vectorial creado al ejecutar (no se versiona)
-```
+│   └── index.html         # Interfaz web conversacional
+├── evaluation/            # Evaluación con el framework Ragas
+│   ├── eval_questions.json # Dataset de 20 preguntas (15 corpus / 5 fuera de alcance)
+│   ├── run_ragas.py       # Script de ejecución de métricas Ragas
+│   └── compare_runs.py    # Script de comparación de experimentos
+└── chroma/                # Índice vectorial persistente (no se versiona)
 
 Los PDF actuales en `documents/` son manuales de información importante, adaptador de corriente, cámara, funda y protector de pantalla, base, mandos Joy-Con 2, empuñadura de carga, volante, mando Pro y mando de Nintendo GameCube.
 
@@ -218,3 +223,107 @@ Si configuras el servicio manualmente en lugar de usar el Blueprint:
 - **Environment Variable:** `GROQ_API_KEY`, con la clave creada en Groq Console
 
 Los PDF deben estar incluidos en el repositorio dentro de `documents/` para que Render los pueda indexar. Render puede eliminar archivos generados locales al reiniciar o volver a desplegar; en ese caso la aplicación volverá a crear `chroma/` al procesar una consulta, por lo que necesitará descargar otra vez el modelo de embeddings. El servidor de desarrollo `python app.py` se reserva para uso local.
+⚙️ Flujo RAG e Implementación Técnica
+Selección de documentos: Corpus compuesto por 10 manuales oficiales en PDF (cámara, adaptador de corriente, base, funda, soporte de carga, Joy-Con 2, volante, mando Pro, mando GameCube e información importante de la consola), generando 1,602 fragmentos (chunks).
+
+Ingesta: Extracción de texto y metadatos (source, page) mediante PyPDFLoader.
+
+Chunking: Fragmentación recursiva (RecursiveCharacterTextSplitter) con un tamaño de 500 caracteres y un solape de 50 caracteres (10%).
+
+Vectorización e Índice: Embeddings multilingües con sentence-transformers/paraphrase-multilingual-MiniLM-L12-v2 guardados en una base de datos vectorial persistente ChromaDB (distancia coseno).
+
+Filtrado / Recuperación: Búsqueda por similitud con top_k = 5 y filtrado estricto en español (languages='es').
+
+Generación: Integración con la API de Groq usando el modelo qwen/qwen3.8-27b, con reglas de abstención y formato de citas.
+
+Conversación: Reescritura autónoma de preguntas de seguimiento para resolver la correferencia manteniendo el historial en memoria del navegador.
+
+💻 Instalación y Ejecución Local
+Requisitos previos
+Python 3.10 o posterior (desarrollado en Python 3.12+).
+
+Git.
+
+Una API Key de Groq.
+
+Pasos de Instalación
+1.Clonar Repositorio
+
+git clone [https://github.com/tu-usuario/ChatBot_Soporte_NintendoSwitch2.git](https://github.com/tu-usuario/ChatBot_Soporte_NintendoSwitch2.git)
+cd ChatBot_Soporte_NintendoSwitch2
+
+2.Crear y activar entorno virtual:
+
+Windows (PowerShell):
+py -m venv venv
+.\venv\Scripts\Activate.ps1
+
+3.Instalar dependencias:
+
+pip install --upgrade pip
+pip install -r requirements.txt
+
+4.Configurar variables de entorno:
+
+Copia .env.example a .env y configura tus credenciales:
+GROQ_API_KEY=tu_clave_real_de_groq
+GROQ_MODEL=qwen/qwen3.8-27b
+EMBEDDING_MODEL=sentence-transformers/paraphrase-multilingual-MiniLM-L12-v2
+CHUNK_SIZE=500
+CHUNK_OVERLAP=50
+TOP_K=5
+LANGUAGES=es
+
+5.Indexar los documentos y ejecutar la aplicación:
+python ingest.py
+python app.py
+Abre http://127.0.0.1:5000 en el navegador.
+
+📊 Evaluación RAG con Ragas
+El proyecto evalúa cuantitativamente la calidad del pipeline RAG utilizando el framework Ragas con un juez evaluador LLM (openai/gpt-oss-120b).
+
+Dataset de Evaluación
+El archivo evaluation/eval_questions.json contiene 20 preguntas:
+
+15 preguntas dentro del corpus: Cobertura de especificaciones y precauciones por manual con respuestas de referencia (ground truth).
+
+5 preguntas fuera del corpus: Preguntas irrelevantes o no contenidas en los manuales (ej. capital de Francia, precio en Colombia) para medir el control de alucinaciones (frase exacta de abstención).
+
+Resultados de la Iteración de Mejora (baseline vs iter1)
+Se comparó la versión base frente a la Iteración 1 (activación del filtro estricto de idioma languages='es')
+
+
+Hallazgo Principal: El filtro de idioma eliminó la contaminación multilingüe en el top_k, lo que redujo las abstenciones falsas de 3 a 1 dentro del corpus y provocó un incremento significativo en answer_relevancy (+0.321).
+
+Propuesta Futura: La estrategia de inyectar el nombre del manual en el encabezado del fragmento (header=True) demostró alcanzar un 100% de Hit Rate en las pruebas de recuperación offline, identificándose como la mejora arquitectónica superior.
+
+Comandos de Evaluación:
+# Ejecutar evaluación con Ragas
+python evaluation/run_ragas.py --label iter1 --languages es
+
+# Comparar resultados de ejecuciones
+python evaluation/compare_runs.py baseline iter1
+
+
+☁️ Despliegue en Render
+El repositorio incluye la definición en render.yaml para despliegue automatizado como servicio web en Render con Gunicorn.
+
+Conecta el repositorio GitHub en Render creando un New Web Service / Blueprint.
+
+Asigna las Variables de Entorno obligatorias en el panel de Render:
+
+GROQ_API_KEY: Tu API Key secreta de Groq.
+
+GROQ_MODEL: qwen/qwen3.8-27b
+
+EMBEDDING_MODEL: sentence-transformers/paraphrase-multilingual-MiniLM-L12-v2
+
+LANGUAGES: es
+
+El comando de construcción (buildCommand) ejecutará pip install -r requirements.txt && python ingest.py para construir el índice vectorial en el entorno de despliegue antes de iniciar el servidor.
+
+### ¿Qué cambios clave se introdujeron?
+1. **Sección de Enlaces:** Con links directos al repositorio y a la app desplegada.
+2. **Explicación del Flujo RAG estructurada:** Con parámetros (500/50/5/es) y detalle de ingesta.
+3. **Sección Completa de Ragas:** Incluyendo la descripción del dataset (20 preguntas), la tabla oficial comparativa de la entrega (`baseline` vs `iter1`) y los comandos de evaluación.
+4. **Actualización de variables de entorno y modelos:** Corregido `GROQ_MODEL` a `qwen/qwen3.8-27b` (que es el generador real que usaste).

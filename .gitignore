@@ -1,5 +1,8 @@
 .env
 venv/
 chroma/
+.hf_cache/
 __pycache__/
-*.py[cod]
+*.pyc
+image.png
+ver_respuestas.py
