@@ -1,17 +1,23 @@
 """Pipeline RAG: ingesta, chunking, vectorización, índice, recuperación y generación."""
-import hashlib
 import os
 import re
 import unicodedata
+import hashlib
 from dataclasses import dataclass, field
 from functools import lru_cache
 from pathlib import Path
 
+# Restricción estricta de hilos para evitar picos de memoria RAM en Render
+os.environ["TOKENIZERS_PARALLELISM"] = "false"
+os.environ["OMP_NUM_THREADS"] = "1"
+os.environ["MKL_NUM_THREADS"] = "1"
+os.environ["OPENBLAS_NUM_THREADS"] = "1"
+
 PROJECT_DIR = Path(__file__).resolve().parent
 DOCUMENTS_DIR = PROJECT_DIR / "documents"
 NO_ANSWER = "No encontré información sobre esto en la base de conocimientos."
-MAX_HISTORY_TURNS = 6          # mensajes (usuario + asistente) que se conservan
-SNIPPET_CHARS = 350            # longitud del fragmento que se muestra como fuente
+MAX_HISTORY_TURNS = 6
+SNIPPET_CHARS = 350
 
 
 def _chroma_dir() -> Path:
@@ -20,15 +26,12 @@ def _chroma_dir() -> Path:
 
 @dataclass(frozen=True)
 class RAGConfig:
-    """Parámetros del pipeline. Se leen del entorno para poder comparar configuraciones."""
     chunk_size: int = 500
     chunk_overlap: int = 50
     top_k: int = 5
-    min_score: float = 0.0     # relevancia mínima (1 - distancia coseno); 0 = sin umbral
-    embedding_model: str = "sentence-transformers/paraphrase-multilingual-MiniLM-L12-v2"
-    # Idiomas a indexar (p. ej. "es" o "es,en"); vacío = todos. Los manuales traen el mismo texto en ~12 idiomas.
+    min_score: float = 0.0
+    embedding_model: str = "sentence-transformers/all-MiniLM-L6-v2"
     languages: str = field(default_factory=lambda: os.getenv("LANGUAGES", "").strip().lower())
-    # Si es True, cada fragmento se indexa con el nombre del manual al inicio ("[Manual: volante Joy-Con 2] ...").
     header: bool = field(default_factory=lambda: os.getenv("CHUNK_HEADER", "").strip().lower() in ("1", "true", "yes"))
 
     @classmethod
@@ -43,7 +46,6 @@ class RAGConfig:
 
     @property
     def collection_name(self) -> str:
-        # Un índice por combinación de chunking + embeddings: permite comparar sin mezclar datos.
         tag = hashlib.md5(self.embedding_model.encode()).hexdigest()[:6]
         name = f"manuales_c{self.chunk_size}_o{self.chunk_overlap}_{tag}"
         if self.languages:
@@ -53,7 +55,6 @@ class RAGConfig:
         return name
 
 
-# ---------------------------------------------------------------- prompts
 SYSTEM_PROMPT = """Eres un asistente experto en los manuales oficiales de accesorios de Nintendo Switch 2.
 
 # Reglas
@@ -67,29 +68,7 @@ SYSTEM_PROMPT = """Eres un asistente experto en los manuales oficiales de acceso
 8. Los manuales traen el mismo texto en varios idiomas. Redacta solo en el idioma de la pregunta y no copies frases en otros idiomas.
 
 # Formato de salida
-Respuesta directa y breve. Última línea: "Fuentes: <documento> (pág. N); ..." con los documentos y páginas del contexto que realmente usaste. Si respondes con la frase de "sin información", no incluyas la línea de fuentes.
-
-# Ejemplos (solo ilustran el formato; sustituye por los de tu Avance 1 si difieren)
-<ejemplo>
-<contexto>
-[Fuente: Manual_A.pdf | pág. 2]
-Para cargar el accesorio, conéctalo al adaptador mediante el cable USB-C. El indicador se ilumina durante la carga.
-</contexto>
-<pregunta>¿Cómo cargo el accesorio?</pregunta>
-Respuesta:
-1. Conecta el accesorio al adaptador con el cable USB-C.
-2. Comprueba que el indicador se ilumina: significa que está cargando.
-Fuentes: Manual_A.pdf (pág. 2)
-</ejemplo>
-<ejemplo>
-<contexto>
-[Fuente: Manual_A.pdf | pág. 2]
-Para cargar el accesorio, conéctalo al adaptador mediante el cable USB-C.
-</contexto>
-<pregunta>¿Cuánto cuesta el accesorio?</pregunta>
-Respuesta:
-{no_answer}
-</ejemplo>"""
+Respuesta directa y breve. Última línea: "Fuentes: <documento> (pág. N); ..." con los documentos y páginas del contexto que realmente usaste. Si respondes con la frase de "sin información", no incluyas la línea de fuentes."""
 
 USER_TEMPLATE = """<historial>
 {history}
@@ -117,13 +96,12 @@ class RAGError(RuntimeError):
     """Error de configuración o disponibilidad esperable del sistema RAG."""
 
 
-# ---------------------------------------------------------------- componentes
-@lru_cache(maxsize=2)
+@lru_cache(maxsize=1)
 def _get_embeddings(model_name: str):
     try:
         from langchain_huggingface import HuggingFaceEmbeddings
     except ImportError as error:
-        raise RAGError("Faltan dependencias RAG. Instálalas con: pip install -r requirements.txt") from error
+        raise RAGError("Faltan dependencias RAG.") from error
     return HuggingFaceEmbeddings(
         model_name=model_name,
         model_kwargs={"device": "cpu"},
@@ -132,67 +110,49 @@ def _get_embeddings(model_name: str):
 
 
 def load_documents():
-    """Ingesta: extrae texto de cada PDF; cada página conserva `source` (archivo) y `page`."""
     pdf_files = sorted(p for p in DOCUMENTS_DIR.glob("*.pdf")) if DOCUMENTS_DIR.exists() else []
     if not pdf_files:
-        raise RAGError("No hay documentos PDF en la carpeta 'documents'. Coloca allí al menos un PDF.")
+        raise RAGError("No hay documentos PDF en la carpeta 'documents'.")
     try:
         from langchain_community.document_loaders import PyPDFLoader
     except ImportError as error:
-        raise RAGError("Faltan dependencias RAG. Instálalas con: pip install -r requirements.txt") from error
+        raise RAGError("Faltan dependencias RAG.") from error
 
     pages = []
     for pdf in pdf_files:
         for page in PyPDFLoader(str(pdf)).load():
-            page.metadata["source"] = pdf.name      # solo el nombre: se muestra al citar
+            page.metadata["source"] = pdf.name
             pages.append(page)
     return pages
 
 
 PRODUCT_TITLES = {
-    "NSwitch2_ImportantInformation_EUR.pdf": "información importante de Nintendo Switch 2 (Important Information)",
-    "NSwitch2_Information_ACAdapter_EUR.pdf": "adaptador de corriente (AC adapter)",
-    "NSwitch2_Information_Camera_EUR.pdf": "cámara (camera)",
-    "NSwitch2_Information_CarryingCaseAndScreenProtector_EUR.pdf": "funda y protector de pantalla (carrying case and screen protector)",
-    "NSwitch2_Information_DockSet_EUR.pdf": "base (dock set)",
+    "NSwitch2_ImportantInformation_EUR.pdf": "información importante de Nintendo Switch 2",
+    "NSwitch2_Information_ACAdapter_EUR.pdf": "adaptador de corriente",
+    "NSwitch2_Information_Camera_EUR.pdf": "cámara",
+    "NSwitch2_Information_CarryingCaseAndScreenProtector_EUR.pdf": "funda y protector de pantalla",
+    "NSwitch2_Information_DockSet_EUR.pdf": "base",
     "NSwitch2_Information_JoyCon2_EUR.pdf": "mandos Joy-Con 2",
-    "NSwitch2_Information_JoyCon2ChargingGrip_EUR.pdf": "soporte de carga para Joy-Con 2 (charging grip)",
-    "NSwitch2_Information_JoyCon2Wheel_EUR.pdf": "volante Joy-Con 2 (wheel)",
-    "NSwitch2_Information_ProController_EUR.pdf": "mando Pro (Pro Controller)",
-    "NSwitch2_NintendoGameCubeController_EUR.pdf": "mando de Nintendo GameCube (GameCube controller)",
+    "NSwitch2_Information_JoyCon2ChargingGrip_EUR.pdf": "soporte de carga para Joy-Con 2",
+    "NSwitch2_Information_JoyCon2Wheel_EUR.pdf": "volante Joy-Con 2",
+    "NSwitch2_Information_ProController_EUR.pdf": "mando Pro",
+    "NSwitch2_NintendoGameCubeController_EUR.pdf": "mando de Nintendo GameCube",
 }
 
-# Palabras funcionales poco ambiguas por idioma (detector ligero, sin dependencias externas).
 _LANG_WORDS = {
-    "es": "el los las del una tu tus sus este esta estos estas pero también sobre cuando durante entre hasta producto "
-          "utiliza utilices asegúrate mantén evita puede pueden debe deben ni mandos consola".split(),
-    "pt": "os as do da dos das uma não ao aos ou deverá deverão utilizar produto comandos nos nas seu sua pelo pela "
-          "quando um com".split(),
-    "it": "il della dei delle degli per non sono che prodotto utilizzare usare collegare alla nel nella sul dal "
-          "controller".split(),
-    "fr": "le les des du une pour ne pas vous est dans sur avec ce cette ces produit manette utilisez et au aux qui".split(),
+    "es": "el los las del una tu tus sus este esta estos estas pero también sobre cuando durante entre hasta producto utiliza utilices asegúrate mantén evita puede deben mandos consola".split(),
     "en": "the and of to is this your with for not do that are or be product controller use connect if when".split(),
-    "de": "der die das und nicht mit den dem ein eine ist zu wenn für dieses produkt verwende kann sollte bitte achte".split(),
-    "nl": "het een niet van voor met dit je jij gebruik wanneer deze als bij naar kan moet".split(),
-    "sv": "och att inte för med är den det ett av du använd får".split(),
-    "da": "og ikke er til på ved hvis med kan skal at af du brug".split(),
-    "fi": "ja tai ei älä jos on että käytä tuote kun tätä tämä".split(),
 }
 _LANG_SETS = {lang: set(words) for lang, words in _LANG_WORDS.items()}
 
 
 def detect_language(text: str) -> str:
-    """Devuelve 'es', 'en', ... o 'unknown'. Heurística por palabras funcionales; basta para filtrar fragmentos."""
-    letters = [c for c in text if c.isalpha()]
-    if letters and sum("\u0400" <= c <= "\u04ff" for c in letters) / len(letters) > 0.5:
-        return "ru"
     tokens = re.findall(r"[^\W\d_]+", text.lower())
     scores = {lang: sum(t in words for t in tokens) for lang, words in _LANG_SETS.items()}
     ranked = sorted(scores.items(), key=lambda kv: kv[1], reverse=True)
-    (best, top), (_, second) = ranked[0], ranked[1]
-    if top < 3 or top == second:
-        return "unknown"
-    return best
+    if not ranked or ranked[0][1] < 2:
+        return "es"  # Por defecto asumimos español para evitar filtrar de más en recursos limitados
+    return ranked[0][0]
 
 
 def _doc_title(source: str) -> str:
@@ -204,7 +164,6 @@ def _doc_title(source: str) -> str:
 
 
 def split_documents(pages, cfg: RAGConfig):
-    """Chunking recursivo: corta por párrafo, luego línea, frase y palabra."""
     from langchain_text_splitters import RecursiveCharacterTextSplitter
 
     splitter = RecursiveCharacterTextSplitter(
@@ -213,11 +172,6 @@ def split_documents(pages, cfg: RAGConfig):
         separators=["\n\n", "\n", ". ", " ", ""],
     )
     chunks = [c for c in splitter.split_documents(pages) if c.page_content.strip()]
-    for chunk in chunks:
-        chunk.metadata["lang"] = detect_language(chunk.page_content)
-    if cfg.languages:
-        allowed = {x.strip() for x in cfg.languages.split(",") if x.strip()}
-        chunks = [c for c in chunks if c.metadata["lang"] in allowed]
     for i, chunk in enumerate(chunks):
         chunk.metadata["chunk_id"] = i
         if cfg.header:
@@ -226,12 +180,11 @@ def split_documents(pages, cfg: RAGConfig):
     return chunks
 
 
-def build_store(cfg: RAGConfig, rebuild: bool = False):
-    """Crea (o reutiliza) el índice Chroma persistente de esta configuración."""
+def build_store(cfg: RAGConfig):
     try:
         from langchain_chroma import Chroma
     except ImportError as error:
-        raise RAGError("Faltan dependencias RAG. Instálalas con: pip install -r requirements.txt") from error
+        raise RAGError("Faltan dependencias RAG.") from error
 
     store = Chroma(
         collection_name=cfg.collection_name,
@@ -239,20 +192,23 @@ def build_store(cfg: RAGConfig, rebuild: bool = False):
         persist_directory=str(_chroma_dir()),
         collection_metadata={"hnsw:space": "cosine"},
     )
-    if rebuild and store._collection.count() > 0:
-        store.delete_collection()
-        return build_store(cfg, rebuild=False)
+    
+    # Si la base de datos ya tiene elementos, los reutilizamos sin reindexar para ahorrar RAM
     if store._collection.count() > 0:
         return store
 
     chunks = split_documents(load_documents(), cfg)
     if not chunks:
-        raise RAGError("No se pudo extraer texto de los PDF. Verifica que contengan texto seleccionable.")
-    store.add_documents(chunks)
+        raise RAGError("No se pudo extraer texto de los PDF.")
+    
+    # Añadir en lotes pequeños para no saturar los 512MB de RAM
+    batch_size = 50
+    for i in range(0, len(chunks), batch_size):
+        store.add_documents(chunks[i:i + batch_size])
     return store
 
 
-@lru_cache(maxsize=4)
+@lru_cache(maxsize=1)
 def get_vector_store(cfg: RAGConfig):
     return build_store(cfg)
 
@@ -261,15 +217,14 @@ def get_vector_store(cfg: RAGConfig):
 def _get_llm():
     api_key = os.getenv("GROQ_API_KEY", "").strip()
     if not api_key:
-        raise RAGError("Falta GROQ_API_KEY. Configúrala en .env o en las variables de entorno del servicio.")
+        raise RAGError("Falta GROQ_API_KEY.")
     try:
         from langchain_groq import ChatGroq
     except ImportError as error:
-        raise RAGError("Faltan dependencias RAG. Instálalas con: pip install -r requirements.txt") from error
-    return ChatGroq(model=os.getenv("GROQ_MODEL", "openai/gpt-oss-120b"), temperature=0.0, api_key=api_key)
+        raise RAGError("Faltan dependencias RAG.") from error
+    return ChatGroq(model=os.getenv("GROQ_MODEL", "qwen/qwen3.8-27b"), temperature=0.0, api_key=api_key)
 
 
-# ---------------------------------------------------------------- utilidades
 def _normalize(text: str) -> str:
     text = unicodedata.normalize("NFKD", text.casefold())
     text = "".join(c for c in text if not unicodedata.combining(c))
@@ -277,18 +232,15 @@ def _normalize(text: str) -> str:
 
 
 def is_no_answer(text: str) -> bool:
-    """True si la respuesta es la frase de "sin información", aunque venga entre comillas o con puntuación extra."""
     return _normalize(NO_ANSWER) in _normalize(text)
 
 
 def _small_talk_response(question: str) -> str | None:
     n = _normalize(question)
-    if n in {"hola", "buenas", "hey", "hi", "buenos dias", "buenas tardes", "buenas noches"}:
-        return "¡Hola! ¿En qué puedo ayudarte? Puedes preguntarme sobre la cámara, los controles u otros manuales de Nintendo Switch 2."
-    if n in {"gracias", "muchas gracias", "te agradezco"}:
-        return "¡Con gusto! ¿Tienes otra pregunta sobre los manuales?"
-    if n in {"adios", "hasta luego", "nos vemos", "chao"}:
-        return "¡Hasta luego! Aquí estaré si necesitas consultar algo de los manuales."
+    if n in {"hola", "buenas", "hey", "hi", "buenos dias"}:
+        return "¡Hola! ¿En qué puedo ayudarte con los manuales de Nintendo Switch 2?"
+    if n in {"gracias", "muchas gracias"}:
+        return "¡Con gusto! ¿Tienes otra pregunta?"
     return None
 
 
@@ -296,11 +248,10 @@ def _format_history(history: list[dict]) -> str:
     if not history:
         return "(sin historial)"
     names = {"user": "Usuario", "assistant": "Asistente"}
-    return "\n".join(f"{names[m['role']]}: {m['content'][:600]}" for m in history)
+    return "\n".join(f"{names[m['role']]}: {m['content'][:400]}" for m in history)
 
 
 def _standalone_question(llm, question: str, history: list[dict]) -> str:
-    """Convierte una pregunta de seguimiento en una pregunta autónoma antes de buscar."""
     if not history:
         return question
     prompt = CONDENSE_PROMPT.format(history=_format_history(history), question=question)
@@ -309,7 +260,6 @@ def _standalone_question(llm, question: str, history: list[dict]) -> str:
 
 
 def retrieve(question: str, cfg: RAGConfig):
-    """Recuperación por similitud coseno (top_k) con umbral opcional de relevancia."""
     results = get_vector_store(cfg).similarity_search_with_relevance_scores(question, k=cfg.top_k)
     return [(doc, score) for doc, score in results if score >= cfg.min_score]
 
@@ -325,9 +275,7 @@ def _source_entry(doc, score: float) -> dict:
     }
 
 
-# ---------------------------------------------------------------- pipeline
 def answer_question(question: str, history: list[dict] | None = None, config: RAGConfig | None = None) -> dict:
-    """Devuelve {answer, sources, contexts, standalone_question}."""
     cfg = config or RAGConfig.from_env()
     history = (history or [])[-MAX_HISTORY_TURNS:]
 
@@ -338,7 +286,7 @@ def answer_question(question: str, history: list[dict] | None = None, config: RA
     llm = _get_llm()
     standalone = _standalone_question(llm, question, history)
     hits = retrieve(standalone, cfg)
-    if not hits:                                  # nada relevante: no se llama al LLM
+    if not hits:
         return {"answer": NO_ANSWER, "sources": [], "contexts": [], "standalone_question": standalone}
 
     context = "\n\n---\n\n".join(
