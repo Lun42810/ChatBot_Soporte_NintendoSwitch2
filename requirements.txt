@@ -1,3 +1,5 @@
+--find-links https://download.pytorch.org/whl/cpu/torch_stable.html
+torch--cpu
 Flask
 gunicorn
 python-dotenv
@@ -8,7 +10,5 @@ langchain-chroma
 langchain-huggingface
 langchain-groq
 sentence-transformers
-torch
 chromadb
 pypdf
- 
