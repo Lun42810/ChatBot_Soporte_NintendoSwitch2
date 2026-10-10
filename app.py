@@ -15,10 +15,10 @@ from rag import MAX_HISTORY_TURNS, RAGConfig, RAGError, answer_question, get_vec
 app = Flask(__name__)
 
 ## Precarga el índice (y el modelo de embeddings) al arrancar, para que la primera pregunta no tarde.
-#try:
-   # get_vector_store(RAGConfig.from_env())
-#except Exception:
-  #  app.logger.exception("No se pudo precargar el índice")
+try:
+   get_vector_store(RAGConfig.from_env())
+except Exception:
+   app.logger.exception("No se pudo precargar el índice")
 
 
 def _clean_history(raw):
