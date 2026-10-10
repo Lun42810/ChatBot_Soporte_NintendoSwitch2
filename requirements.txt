@@ -3,5 +3,11 @@ gunicorn
 python-dotenv
 langchain-core
 langchain-community
+langchain-text-splitters
+langchain-chroma
+langchain-huggingface
 langchain-groq
+sentence-transformers
+chromadb
+pysqlite3-binary
 pypdf
