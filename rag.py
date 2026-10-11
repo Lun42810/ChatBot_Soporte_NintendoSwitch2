@@ -19,8 +19,16 @@ MAX_HISTORY_TURNS = 6          # mensajes (usuario + asistente) que se conservan
 SNIPPET_CHARS = 350            # longitud del fragmento que se muestra como fuente
 
 
+#def _chroma_dir() -> Path:
+ #return Path(os.getenv("CHROMA_DIR", PROJECT_DIR / "chroma"))
+#cambio para despliegue en streamlit
+# BUSCA ESTA FUNCIÓN EN TU RAG.PY Y REEMPLÁZALA:
 def _chroma_dir() -> Path:
+    # Si estamos en Streamlit Cloud, forzamos una ruta con permisos de escritura (/tmp)
+    if os.getenv("STREAMLIT_RUNTIME_VERSION") or "STREAMLIT_SERVER_PORT" in os.environ:
+        return Path("/tmp/chroma")
     return Path(os.getenv("CHROMA_DIR", PROJECT_DIR / "chroma"))
+
 
 
 @dataclass(frozen=True)
