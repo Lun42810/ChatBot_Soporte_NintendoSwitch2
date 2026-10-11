@@ -1,7 +1,6 @@
 --extra-index-url https://download.pytorch.org/whl/cpu
 torch
-Flask
-gunicorn
+streamlit
 python-dotenv
 langchain-core
 langchain-community
@@ -11,5 +10,4 @@ langchain-huggingface
 langchain-groq
 sentence-transformers
 chromadb
-pysqlite3-binary
 pypdf
