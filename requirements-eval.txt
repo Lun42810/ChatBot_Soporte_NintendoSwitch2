@@ -1,0 +1,4 @@
+-r requirements.txt
+ragas==0.2.15
+pandas
+matplotlib

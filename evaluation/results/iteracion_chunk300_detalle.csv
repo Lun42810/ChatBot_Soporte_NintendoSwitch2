@@ -1,0 +1,40 @@
+﻿id,in_scope,question,response,retrieved_sources,faithfulness,answer_relevancy,context_precision,context_recall
+1,True,¿Cómo se conecta la cámara a la consola?,"Para conectar la cámara a la consola, utiliza el cable USB-C para conectar la cámara a la consola Nintendo Switch 2.
+
+Fuentes: NSwitch2_Information_Camera_EUR.pdf (pág. 1)",NSwitch2_Information_Camera_EUR.pdf p.2; NSwitch2_Information_Camera_EUR.pdf p.2; NSwitch2_Information_Camera_EUR.pdf p.2; NSwitch2_Information_Camera_EUR.pdf p.1; NSwitch2_Information_Camera_EUR.pdf p.1,0.6666666666666666,0.8100329465615109,0.99999999998,0.5
+2,True,¿Para qué sirve el obturador de privacidad de la cámara y cómo sé si la cámara está en funcionamiento?,"El obturador de privacidad sirve para permitir que la cámara muestre tu imagen o para desactivar la transmisión de imagen de vídeo durante las sesiones de chat. Sabrás que la cámara está en funcionamiento porque una luz LED se enciende.
+
+Fuentes: NSwitch2_Information_Camera_EUR.pdf (pág. 1)",NSwitch2_Information_Camera_EUR.pdf p.1; NSwitch2_Information_Camera_EUR.pdf p.2; NSwitch2_Information_Camera_EUR.pdf p.1; NSwitch2_Information_Camera_EUR.pdf p.2; NSwitch2_Information_Camera_EUR.pdf p.2,1.0,0.9956282694830041,0.9999999999666667,1.0
+3,True,¿En qué rango de temperatura funciona el adaptador de corriente y qué debo hacer si no lo voy a usar durante mucho tiempo?,"El adaptador de corriente funciona a una temperatura comprendida entre 5 y 35 °C. No encontré información sobre qué hacer si no lo vas a usar durante mucho tiempo en la base de conocimientos.
+Fuentes: NSwitch2_Information_ACAdapter_EUR.pdf (pág. 1)",NSwitch2_Information_DockSet_EUR.pdf p.1; NSwitch2_Information_ACAdapter_EUR.pdf p.1; NSwitch2_Information_ACAdapter_EUR.pdf p.1; NSwitch2_Information_DockSet_EUR.pdf p.1; NSwitch2_Information_ACAdapter_EUR.pdf p.2,0.3333333333333333,0.0,0.99999999998,0.5
+4,True,¿Qué precaución hay que tener con las rejillas de ventilación de la base?,"No cubras las rejillas de ventilación de entrada y de salida de la base para prevenir sobrecalentamientos. Si se acumula polvo u otra sustancia en las rejillas, retíralo utilizando un aspirador.
+
+Fuentes: NSwitch2_Information_DockSet_EUR.pdf (pág. 1)",NSwitch2_Information_DockSet_EUR.pdf p.1; NSwitch2_ImportantInformation_EUR.pdf p.21; NSwitch2_Information_DockSet_EUR.pdf p.2; NSwitch2_Information_DockSet_EUR.pdf p.1; NSwitch2_ImportantInformation_EUR.pdf p.25,1.0,0.8149034028517445,0.99999999998,1.0
+5,True,¿Cómo se coloca el protector de pantalla?,No encontré información sobre esto en la base de conocimientos.,,0.0,0.0,0.99999999998,0.5
+6,True,¿Qué debo hacer antes de guardar la consola en la funda?,No encontré información sobre esto en la base de conocimientos.,,0.0,0.0,0.7499999999625,0.5
+7,True,¿Cómo se carga con el soporte de carga de los Joy-Con 2?,No encontré información sobre esto en la base de conocimientos.,,0.0,0.0,0.49999999995,0.0
+8,True,¿Qué precauciones hay que seguir al usar un Joy-Con 2 como ratón?,"Respuesta:
+1. Evita utilizar el Joy-Con 2 en superficies que se rayen con facilidad. Se recomienda el uso de una alfombrilla para ratón o similar.
+2. Al mover el Joy-Con 2, no lo sometas a golpes ni ejerzas presión sobre él.
+3. Si se acumula polvo o suciedad en el Joy-Con 2, en la correa o en la superficie de uso, limpia bien el objeto afectado antes de utilizarlo.
+Fuentes: NSwitch2_ImportantInformation_EUR.pdf (pág. 16); NSwitch2_Information_JoyCon2_EUR.pdf (pág. 1)",NSwitch2_ImportantInformation_EUR.pdf p.18; NSwitch2_ImportantInformation_EUR.pdf p.8; NSwitch2_ImportantInformation_EUR.pdf p.16; NSwitch2_Information_JoyCon2_EUR.pdf p.1; NSwitch2_Information_JoyCon2_EUR.pdf p.2,0.8333333333333334,0.7941177455540376,0.8041666666465626,0.6666666666666666
+9,True,¿Cómo se desactiva la conexión Bluetooth de los Joy-Con 2?,"Para desactivar la conexión Bluetooth de los Joy-Con 2, debes activar el modo avión de la consola (asegurándote de que la opción Bluetooth permanezca desactivada) mientras la consola esté en modo portátil o en modo sobremesa.
+
+Fuentes: NSwitch2_Information_JoyCon2_EUR.pdf (pág. 1); NSwitch2_ImportantInformation_EUR.pdf (pág. 14)",NSwitch2_Information_ProController_EUR.pdf p.1; NSwitch2_NintendoGameCubeController_EUR.pdf p.1; NSwitch2_Information_JoyCon2_EUR.pdf p.1; NSwitch2_ImportantInformation_EUR.pdf p.14; NSwitch2_Information_JoyCon2_EUR.pdf p.2,0.6,1.0000000000000002,0.999999999975,0.5
+10,True,¿Qué precauciones indica el manual del volante Joy-Con 2?,No encontré información sobre esto en la base de conocimientos.,,0.0,0.0,0.0,0.0
+11,True,¿Cómo se activa el modo reposo y cómo se apaga la consola?,"Para activar el modo reposo, pulsa el botón de alimentación. Para apagar la consola, mantén pulsado el botón de alimentación durante al menos 12 segundos.
+
+Fuentes: NSwitch2_ImportantInformation_EUR.pdf (pág. 8)",NSwitch2_ImportantInformation_EUR.pdf p.26; NSwitch2_ImportantInformation_EUR.pdf p.8; NSwitch2_Information_ProController_EUR.pdf p.1; NSwitch2_ImportantInformation_EUR.pdf p.13; NSwitch2_ImportantInformation_EUR.pdf p.8,0.6666666666666666,1.0000000000000002,0.19999999998,1.0
+12,True,¿Con qué frecuencia recomienda el manual hacer pausas al jugar?,"El manual recomienda hacer una pausa de 10 a 15 minutos al menos una vez por hora, incluso si no se siente la necesidad de hacerlo.
+
+Fuentes: NSwitch2_ImportantInformation_EUR.pdf (pág. 11); NSwitch2_ImportantInformation_EUR.pdf (pág. 15); NSwitch2_ImportantInformation_EUR.pdf (pág. 19); NSwitch2_ImportantInformation_EUR.pdf (pág. 21)",NSwitch2_ImportantInformation_EUR.pdf p.21; NSwitch2_ImportantInformation_EUR.pdf p.19; NSwitch2_ImportantInformation_EUR.pdf p.11; NSwitch2_ImportantInformation_EUR.pdf p.15; NSwitch2_ImportantInformation_EUR.pdf p.21,0.3333333333333333,0.8008499023336831,0.99999999998,1.0
+13,True,¿Cómo funciona el control parental de la consola?,"Para configurar el control parental, debes elegir cómo deseas configurarlo y seguir las instrucciones en pantalla para terminar de activar las restricciones. Una vez configurado, puedes cambiar los ajustes desde la propia consola utilizando una contraseña (PIN). Este PIN también se puede utilizar para desactivar temporalmente el control parental si lo deseas.
+
+Fuentes: NSwitch2_ImportantInformation_EUR.pdf (pág. 4); NSwitch2_ImportantInformation_EUR.pdf (pág. 14)",NSwitch2_ImportantInformation_EUR.pdf p.12; NSwitch2_ImportantInformation_EUR.pdf p.14; NSwitch2_ImportantInformation_EUR.pdf p.4; NSwitch2_ImportantInformation_EUR.pdf p.22; NSwitch2_ImportantInformation_EUR.pdf p.10,1.0,0.864111866585364,0.99999999998,0.3333333333333333
+14,True,¿Cómo se carga y se sincroniza el mando Pro de Nintendo Switch 2?,No encontré información sobre esto en la base de conocimientos.,,0.0,-0.0,0.99999999995,0.3333333333333333
+15,True,¿Cada cuánto hay que cargar la batería del mando de Nintendo GameCube y qué ocurre si no se usa durante mucho tiempo?,No encontré información sobre esto en la base de conocimientos.,,0.0,0.0,0.8333333332916666,1.0
+16,False,¿Cuál es la capital de Francia?,No encontré información sobre esto en la base de conocimientos.,,0.0,0.0,0.0,0.0
+17,False,¿Cuál es la resolución de la cámara de Nintendo Switch 2?,No encontré información sobre esto en la base de conocimientos.,,1.0,0.0,0.0,0.0
+18,False,¿Cuántas horas dura la batería de los Joy-Con 2?,No encontré información sobre esto en la base de conocimientos.,,0.0,0.0,0.0,0.0
+19,False,¿Cuánto cuesta la Nintendo Switch 2 en Colombia?,No encontré información sobre esto en la base de conocimientos.,,0.0,0.0,0.249999999975,0.0
+20,False,¿Cómo se juega Mario Kart World?,No encontré información sobre esto en la base de conocimientos.,,0.0,0.0,0.0,0.0

@@ -1,0 +1,130 @@
+{
+ "config": {
+  "chunk_size": 300,
+  "chunk_overlap": 50,
+  "top_k": 7,
+  "min_score": 0.0,
+  "embedding_model": "sentence-transformers/paraphrase-multilingual-MiniLM-L12-v2",
+  "languages": "",
+  "header": false
+ },
+ "answers": {
+  "1": {
+   "response": "Respuesta:\n1. Usa el cable USB-C para conectar la cámara a la consola Nintendo Switch 2.\nFuentes: NSwitch2_Information_Camera_EUR.pdf (pág. 1)",
+   "contexts": [
+    "Käyttöesimerkki (pöytätila)\nUSB-C-kaapeli\nNintendo Switch 2 -konsoliNintendo Switch 2 -kamera\nKameran peittimellä voit helposti valita, lähetätkö videokuvaa chatissa.\n AUKI KIINNI\nLED-merkkivalo palaa,  \nkun kamera on käytössä.\nhttps:/ /www.nintendo.fi/service",
+    "Eksempel på opsætning (bordpladetilstand)\nUSB-C-kabel\nNintendo Switch 2-konsolNintendo Switch 2-kamera\nNår du chatter, kan du nemt slå videooverførsel til eller fra ved at bruge kameralukkeren.\n ÅBEN LUKKET\nEn LED-indikator viser,  \nnår kameraet er i brug.\nhttps:/ /www.nintendo.dk/service",
+    "Eksempel på oppsett (bordmodus)\nUSB-C-kabel\nNintendo Switch 2-konsollNintendo Switch 2-kamera\nNår du chatter, kan du enkelt slå videooverføringen av eller på ved å bruke kameralukkeren.\n ÅPEN LUKKET\nLED-lyset viser når  \nkameraet er i bruk.\nhttps:/ /www.nintendo.no/service",
+    "déconnectez-le de la console et essuy\nez-le avec un chiffon doux et sec. Évitez l′utilisation de diluant \nou de tout autr\ne solvant.\nUtilisez le câble USB-C pour connecter la caméra à la console Nintendo Switch 2.\nConfiguration type (en mode sur table)\nCâble USB-C",
+    "Beispiel-Setup (Tisch-Modus)\nUSB-C-Kabel\nNintendo Switch 2-KonsoleNintendo Switch 2-Kamera\nDurch Verwendung des Sichtschutzverschlusses kannst du ganz leicht zwischen der Bilddarstellung und \neiner Unterbrechung der Bilddarstellung wechseln.\n GEÖFFNET GESCHLOSSEN\nEine LED zeigt an,",
+    "y\n pásale un paño suave y seco. No utilices ningún tipo de disolvente.\nUsa el cable USB-C para conectar la cámara a la consola Nintendo Switch 2.\nEjemplo de instalación (modo sobremesa)\nCable USB-C\nConsola Nintendo Switch 2Cámara de Nintendo Switch 2",
+    "Gebruik geen verfverdunner of andere oplosmiddelen.\nGebruik de USB-C-kabel om de camer\na te verbinden met het Nintendo Switch 2-systeem.\nVoorbeeld (tafelstijl)\nUSB-C-kabel\nNintendo Switch 2-systeemNintendo Switch 2-camera"
+   ],
+   "sources": "NSwitch2_Information_Camera_EUR.pdf p.2; NSwitch2_Information_Camera_EUR.pdf p.2; NSwitch2_Information_Camera_EUR.pdf p.2; NSwitch2_Information_Camera_EUR.pdf p.1; NSwitch2_Information_Camera_EUR.pdf p.1; NSwitch2_Information_Camera_EUR.pdf p.1; NSwitch2_Information_Camera_EUR.pdf p.1"
+  },
+  "2": {
+   "response": "El obturador de privacidad sirve para permitir fácilmente que la cámara muestre tu imagen o para desactivar la transmisión de imagen de vídeo durante las sesiones de chat. Sabrás que la cámara está en funcionamiento porque una luz LED se ilumina.\n\nFuentes: NSwitch2_Information_Camera_EUR.pdf (pág. 1)",
+   "contexts": [
+    "Gracias al obturador de privacidad, puedes permitir fácilmente que la cámara muestre tu imagen o  \ndesactivar la transmisión de imagen de vídeo durante las sesiones de chat.\n ABIERTO CERRADO\nUna luz LED indica cuándo está \nen funcionamiento la cámara.\nhttps:/ /support.nintendo.com",
+    "Genom att använda integritetsskyddet kan du enkelt sätta på eller stänga av videoöverföringen under \nen chatt.\n ÖPPET STÄNGT\nEn lysdiod visar när  \nkameran är igång.\nhttps:/ /www.nintendo.se/service",
+    "ОТКРЫТА ЗАКРЫТА\nСветодиод показывает,  \nчто камера работает.\nhttps:/ /support.nintendo.com \nНе выбрасывайте этот продукт с бытовыми отходами. Подробную информацию см. на  \nhttps:/ /www.nintendo.com/eu/docs\nWAARSCHUWING - Algemeen\nZORGVULDIG GEBRUIK \nVerbinden\nPrivacysluiter\nNintendo Support",
+    "Otturatore per la privacy\nAssistenza di Nintendo \nSmaltimento del prodotto \nHälso- och säkerhetsinformation\nVARNING – Elsäkerhet\nVARNING – Allmänt\nFÖRSIKTIG ANVÄNDNING\nAnslut så här\nYhdistä kamera Nintendo Switch 2 -konsoliin käyttämällä USB-C-kaapelia.\nKäyttöesimerkki (pöytätila)\nUSB-C-kaapeli",
+    "Helse- og sikkerhetsinformasjon\nADVARSEL – Elektrisk sikkerhet\nADVARSEL – Generelt \nFORSIKTIG BRUK\nTilkobling\nKameralukker\nBergsala Service Center\nAvhending av dette produktet",
+    "GEÖFFNET GESCHLOSSEN\nEine LED zeigt an,  \nwenn die Kamera in Betrieb ist.\nhttps:/ /support.nintendo.com \nEntsorge dieses Produkt nicht im Hausmüll. Weitere Informationen erhältst du unter:  \nhttps:/ /www.nintendo.com/eu/docs\nFür",
+    "An LED shows when the  \ncamera is in operation.\nhttps:/ /support.nintendo.com \nDo not dispose of this product in household waste. For details see https:/ /www.nintendo.com/eu/docs\nDEUTSCH\nNintendo behält sich vor, von Zeit zu Zeit Produktspezifikationen zu ändern und diese Informationen zu"
+   ],
+   "sources": "NSwitch2_Information_Camera_EUR.pdf p.1; NSwitch2_Information_Camera_EUR.pdf p.2; NSwitch2_Information_Camera_EUR.pdf p.1; NSwitch2_Information_Camera_EUR.pdf p.2; NSwitch2_Information_Camera_EUR.pdf p.2; NSwitch2_Information_Camera_EUR.pdf p.1; NSwitch2_Information_Camera_EUR.pdf p.1"
+  },
+  "3": {
+   "response": "El adaptador de corriente funciona a una temperatura comprendida entre 5 y 35 °C. Si no lo vas a usar durante mucho tiempo, debes desconectarlo de la toma de corriente para evitar daños causados por sobretensiones.\n\nFuentes: NSwitch2_Information_ACAdapter_EUR.pdf (pág. 1); NSwitch2_Information_ACAdapter_EUR.pdf (pág. 2)",
+   "contexts": [
+    "por accidente.\n  Al enchufar el adaptador de corriente, asegúrate de que nadie corr a el riesgo de tropezar con el cable.\n  Este producto funciona a una temperatura comprendida entre 5 y 35 °C.",
+    "Este producto funciona a una temperatura comprendida entre 5 y 35 °C.\n  No coloques nada sobr e el cable del adaptador de corriente.\n  A la hora de elegir dónde enchufar el producto, presta atención a la capacidad de carga del circuito \neléctrico.",
+    "engolidos acidentalmente.\n  Ao ligar o adaptador de corrente à consola, certificar-se de que o cabo não causa tropeções acidentais.\n  Ter em consideração que a temperatura de funcionamento deste produto se situa entre os 5 °C e os 35 °C.\n  Não colocar objetos sobr e o cabo do adaptador de corrente.",
+    "Ao ligar o adaptador de corrente à consola, certificar-se de que o cabo não causa tropeções acidentais.\n  Ter em consideração que a temperatura de funcionamento deste produto se situa entre os 5 °C e os 35 °C.",
+    "Bemærk, at driftstemperatur en for dette produkt er mellem 5 °C og 35 °C.\n  Undlad at placere genstande på strømforsyningskablet.\n  Vær opmærksom på kredslø bets belastningskapacitet, når du vælger, hvor produktet skal tilsluttes.",
+    "La temperatura di esercizio di questo prodotto è compresa fra 5°C e 35°C.\n  Non appoggiare nulla sopr a il cavo del blocco alimentatore.\n  Fare attenzione alla capacità di carico del circuito quando si sceglie dove collegare il prodotto.",
+    "Huomaa, että tämän tuotteen käy ttölämpötila on 5–35 °C.\n  Älä aseta muuntajan johdon päälle mitään esineitä.\n  Huomioi virtapiirin kuormitetta vuus, kun valitset mihin kytket tuotteen.\n  Kun muuntajaa ei käytetä pitkiin aikoihin, irrota se pistorasiasta estääksesi ylijännitteen aiheuttamat \nv"
+   ],
+   "sources": "NSwitch2_Information_DockSet_EUR.pdf p.1; NSwitch2_Information_ACAdapter_EUR.pdf p.1; NSwitch2_Information_ACAdapter_EUR.pdf p.1; NSwitch2_Information_DockSet_EUR.pdf p.1; NSwitch2_Information_ACAdapter_EUR.pdf p.2; NSwitch2_Information_ACAdapter_EUR.pdf p.2; NSwitch2_Information_ACAdapter_EUR.pdf p.2"
+  },
+  "4": {
+   "response": "Respuesta:\nNo debes cubrir las rejillas de ventilación de entrada y de salida de la base para prevenir sobrecalentamientos. Si se acumula polvo u otra sustancia en estas rejillas, debes retirarlo utilizando un aspirador.\nFuentes: NSwitch2_Information_DockSet_EUR.pdf (pág. 1)",
+   "contexts": [
+    "N'obstruez ni les grilles ni les entrées de ventilation sur la station d'accueil afin d'éviter toute surchauffe. Si de la poussière ou toute \nautr\ne substance étrangère s'accumulent sur les grilles ou les entrées de ventilation, enlevez celles-ci à l'aide d'un aspirateur.",
+    "Undlad anvendelse i støvede eller røgfyldte områder. \n  Undlad at tildække konsollens luftindtag eller ventila-\ntionsåbninger (afbilledet) eller docken for at undgå \noverophedning. Hvis støv eller andre fremmedlegemer \nophober sig ved luftindtagene eller ventilationsåbning-",
+    "Undlad at tildække luftindtagene eller ventilationsåbningerne på docken for at undgå overophedning. Hvis støv eller andre fremmedlegemer \nophober sig v\ned luftindtagene eller ventilationsåbningerne, skal det fjernes med en støvsuger.\n  Undlad at placere genstande på strømforsyningskablet.",
+    "No cubras las rejillas de ventilación de entrada y de salida de la base para prevenir sobrecalentamientos. Si se acumula polvo u otra \nsus\ntancia en las rejillas de ventilación de entrada o de salida, retíralo utilizando un aspirador.\n  No coloques nada sobr e el cable del adaptador de corriente.",
+    "oppstår kondens, må du skru av strømmen og vente til vanndråpene har fordampet. \n  Ikke bruk i støvete eller røykfylte områder.\n  Ikke dekk til luftinntakene eller ventilasjonen på  \nkonsollen (avbildet) eller dokken, for å unngå  \noveroppheting. Hvis støv eller andre fremmedlegemer",
+    "воздуха или вентиляционных отверстиях собе-\nрется пыль или прочие инородные вещества, \nустраните их пылесосом. \n  Не кладите ничего на кабель блока питания.\n  При выборе розетки для подключения продукта учитывайте предельную нагрузку электрической цепи.",
+    "afin d'éviter toute surchauffe. Si de la poussière ou \ntoute autre substance étrangère s'accumulent sur les \ngrilles ou les entrées de ventilation, enlevez celles-ci à \nl'aide d'un aspirateur.\n  Ne placez rien sur le câble de l'adaptateur secteur."
+   ],
+   "sources": "NSwitch2_Information_DockSet_EUR.pdf p.1; NSwitch2_ImportantInformation_EUR.pdf p.21; NSwitch2_Information_DockSet_EUR.pdf p.2; NSwitch2_Information_DockSet_EUR.pdf p.1; NSwitch2_ImportantInformation_EUR.pdf p.25; NSwitch2_ImportantInformation_EUR.pdf p.11; NSwitch2_ImportantInformation_EUR.pdf p.7"
+  },
+  "5": {
+   "response": "Respuesta:\n1. Alinea el protector de pantalla con los extremos de la pantalla táctil de la consola.\n2. Coloca el protector de pantalla con cuidado, utilizando el paño de limpieza.\n\nFuentes: NSwitch2_Information_CarryingCaseAndScreenProtector_EUR.pdf (pág. 1)",
+   "contexts": [
+    "3   Alinea el protect or de pantalla con los extremos de la pantalla táctil de la consola. Coloca el protector de pantalla con cuidado, utilizando el paño de limpieza",
+    "cellofantejp för att ta bor t den.\n \n \n3   Pass a noggrant in skärmskyddet med Nintendo Switch 2-pekskärmens kanter. Lägg ner det på skärmen och jämna ut de påklistrade områdena med rengöringsduken",
+    "för att förhindra att det uppstår luftbubblor mellan skärmen och skärmskyddet. Dra av resten av skyddsfilmen och sätt fast den andra halvan av skärmskyddet, \nså som visas ovan.\n \n \n \n \n \n \n \n \n \nOm skärmskyddet hamnar snett\nFäst cellofantejp på ett av skärmskyddets hörn och dra försiktigt av det.",
+    "Instrucciones\nQué hacer si el protector de pantalla está mal alineado\nPega cinta adhesiva a una esquina del protector de pantalla y \ndespégalo con cuidado. Después de despegarlo, podrás retomar el \nproceso desde el tercer paso.",
+    "med rengjøringskluten for å forhindre at luftbobler fanges mellom skjermen og skjermbeskytteren. Dra av resten av beskyttelsesfilmen, og påfør den andre halvdelen \nav skjermbeskytteren, som beskrevet ovenfor.\n \n \n \n \n \n \n \n \n \nHvis skjermbeskytteren sitter skjevt på",
+    "remsan för att ta bort smuts och damm.\n2   Dra a v skyddsfilmen från den sida av skärmskyddet där det står ”1”.  \nObs! Hamnar det smuts på skärmskyddet innan det fästs kan du använda \ncellofantejp för att ta bor t den.",
+    "Helbreds- og sikkerhedsoplysninger\nADVARSEL – Generelt\nBæretaske\nSkærmbeskytter\n3   Placer skærmbeskytte ren omhyggeligt, så den flugter med kanterne på Nintendo Switch 2-berøringsskærmen. Læg den ned på skærmen, og udglat de påklæbede"
+   ],
+   "sources": "NSwitch2_Information_CarryingCaseAndScreenProtector_EUR.pdf p.1; NSwitch2_Information_CarryingCaseAndScreenProtector_EUR.pdf p.2; NSwitch2_Information_CarryingCaseAndScreenProtector_EUR.pdf p.2; NSwitch2_Information_CarryingCaseAndScreenProtector_EUR.pdf p.1; NSwitch2_Information_CarryingCaseAndScreenProtector_EUR.pdf p.2; NSwitch2_Information_CarryingCaseAndScreenProtector_EUR.pdf p.2; NSwitch2_Information_CarryingCaseAndScreenProtector_EUR.pdf p.2"
+  },
+  "6": {
+   "response": "No encontré información sobre esto en la base de conocimientos.",
+   "contexts": [
+    "accesorios se ensucian, apaga la consola, desconecta los cables correspondientes y utiliza un paño suave \ny ligeramente húmedo para limpiar la consola o los accesorios que lo necesiten. No utilices ningún tipo de",
+    "pas les parties endommagées. Évitez d'entrer en contact avec tout liquide s'échappant de la console.\n  Gardez la console, ses accessoires et son emballage hors de portée des jeunes enfants et des animaux",
+    "manette et tirez doucement latéralement. Pour \n éviter de faire tomber et d'endommager la console, \nassurez-vous de tenir fermement la console et la \n manette avant d'appuyer sur le bouton d'éjection.",
+    "ett tillbehör blir smutsigt stänger du av strömmen och kopplar ur eventuella kablar, och torkar sedan konsolen \neller tillbehöret med en mjuk och lätt fuktad trasa. Undvik att använda thinner eller andra lösningsmedel. Efter",
+    "осторожно тяните его в сторону. Чтобы не \n уронить и не повредить консоль, нажимайте \nкнопку деблокировки только, когда вы крепко \nдержите консоль и контроллер.\nПРЕДУПРЕЖДЕНИЕ — Общие предосторожности\nОСТОРОЖНО\n20 21",
+    "becomes dirty, turn the power off and disconnect any cables as applicable, then wipe it with a soft, slightly \ndamp cloth. Avoid using thinner or other solvents. After cleaning, make sure products are completely dry \nbefore  using them again.\n  Be aware of your surroundings while playing.",
+    "weichen Tuch ab. Sollte die Konsole oder ein Zubehörteil verschmutzt sein, schalte das Gerät aus, entferne \njegliche Kabel und wische die Konsole oder das Zubehörteil mit einem weichen, leicht feuchten Tuch ab. Verwende"
+   ],
+   "sources": ""
+  },
+  "7": {
+   "response": "No encontré información sobre esto en la base de conocimientos.",
+   "contexts": [
+    "Nintendo Switch 2 Joy-Con 2 charging grip\nJoy-Con 2-Aufladehalterung • Support de recharge Joy-Con 2 • Joy-Con 2-  \noplaadhouder • Подзаряжающий держатель Joy-Con 2 • Soporte de carga para \nmandos Joy-Con 2 • Supor\nte de carregamento para Joy-Con 2 • Impugnatura",
+    "ne suoraan konsoliin tai käyttämällä (erikseen myytävää) Joy-Con 2 -latauskappaletta (BEE-010).\nVarmista, että myös konsoli latautuu ladataksesi siihen liitettyjen ohjainten akut täyteen.\n  Noudata seuraavia varotoimia käyttäessäsi Joy-Con 2 -ohjaimia:",
+    "angebracht ist.\n•  Die Joy-Con 2-Controller werden mithilfe einer magnetischen Verbindung an der Konsole und der Joy-Con 2-  \nHalterung angeschlossen. Bringe keine Aufkleber an der Stelle eines Joy-Con 2 an, an der sich der SL- und",
+    "•  Os comandos Joy-Con 2 encaixam-se à consola e ao suporte para Joy-Con 2 através de uma conexão magnética. \nNão colar autocolantes na área do Joy-Con 2 em que se encontram os botões SL/SR, uma vez que a conexão \npode deteriorar-se e fazer com que o comando se solte inesperadamente.",
+    "carregar em simultâneo.\n  Respeitar estas precauções ao usar os comandos Joy-Con 2:\n•  Para retirar um comando Joy-Con 2 da consola,  \npremir o botão de ejeção na parte traseira do \n Joy-Con 2 e puxá-lo com cuidado. Para evitar deixar \ncair e danificar a consola, premir o botão de ejeção",
+    "zelf ook wordt opgeladen.\n  Let op het volgende wanneer je de Joy-Con 2-controllers gebruikt: \n•  Om een Joy-Con 2 van het systeem los te maken  \ndruk je op de ontgrendelknop aan de achterkant van \nde Joy-Con 2 en trek je voorzichtig opzij. Druk alleen",
+    "mientras esta está cargando.\n  Sigue estas indicaciones cuando utilices los mandos Joy-Con 2: \n•  Para desacoplar un mando Joy-Con 2 de la consola,   \nmantén pulsado el botón de extracción situado en  \nla parte posterior del mando Joy-Con 2 y tira de él"
+   ],
+   "sources": ""
+  },
+  "8": {
+   "response": "Respuesta:\n1. Si hay polvo o suciedad en el Joy-Con 2, en la correa o en la superficie de uso, límpialo antes de utilizarlo.\n2. Utiliza el Joy-Con 2 sobre una superficie plana que no tenga bordes afilados ni protuberancias.\n3. Evita usarlo en superficies que se rayen fácilmente; se recomienda el uso de una alfombrilla para ratón o similar.\n4. Al mover el Joy-Con 2, no lo sometas a golpes ni ejerzas presión sobre él.\nFuentes: NSwitch2_ImportantInformation_EUR.pdf (pág. 4); NSwitch2_Information_JoyCon2_EUR.pdf (pág. 1); NSwitch2_Information_JoyCon2_EUR.pdf (pág. 2)",
+   "contexts": [
+    "•  Non usare il Joy-Con 2 su superfici che si possono graffiare facilmente. È consigliato l'utilizzo di un tappetino \nper il mouse o simile.\n• Quando si muove il Joy-Con 2, non sottoporlo a urti e non esercitare pressione su di esso. \nINFORMAZIONI IMPORTANTI PER I GENITORI\nFiltro famiglia",
+    "Si vous continuez à utiliser le produit sans retirer ces petits objets, vous pourriez endommager les manettes \nJoy-Con 2 ou provoquer un détachement inattendu.\n  Observez les précautions suivantes lorsque vous utilisez une manette Joy-Con 2 comme souris :",
+    "•  Evitar utilizar o Joy-Con 2 em superfícies que se risquem facilmente. Recomenda-se a utilização de um tapete \npara rato.\n• Não manusear com força o Joy-Con 2 nem exercer pressão durante a sua movimentação.\nINFORMAÇÕES IMPORTANTES PARA OS PAIS\nControlo parental",
+    "traseira do respetivo comando Joy-Con 2.\n  Respeitar as seguintes precauções ao utilizar os controlos de rato: \n •  Se algum pó ou sujidade se acumular no Joy-Con 2, na correia Joy-Con 2 ou na mesa ou superfície em uso, limpar bem o objeto \nafetado antes da sua utilização.",
+    "•  Non usare il Joy-Con 2 su superfici che si possono graffiare facilmente. È consigliato l'utilizzo di un tappetino per il mouse o simile. \n •  Quando si muove il Joy-Con 2, non sottoporlo a urti e non esercitare pressione su di esso.",
+    "dazu führen, dass die Joy-Con 2-Controller Schaden nehmen oder sich ungewollt von der Konsole lösen.\n  Beachte bei der Verwendung im Maus-Modus folgende Sicherheitshinweise:\n•  Sollte der Joy-Con 2, die Joy-Con 2-Handgelenksschlaufe oder der verwendete Tisch bzw. die verwendete",
+    "Observe the following precautions when using mouse controls:\n•  If any dust or dirt is present on the Joy-Con 2, the Joy-Con 2 strap or the table or surface being used, wipe it \nclean before use.\n•  Use the Joy-Con 2 on a flat surface with no sharp edges or protrusions."
+   ],
+   "sources": "NSwitch2_ImportantInformation_EUR.pdf p.18; NSwitch2_ImportantInformation_EUR.pdf p.8; NSwitch2_ImportantInformation_EUR.pdf p.16; NSwitch2_Information_JoyCon2_EUR.pdf p.1; NSwitch2_Information_JoyCon2_EUR.pdf p.2; NSwitch2_ImportantInformation_EUR.pdf p.6; NSwitch2_ImportantInformation_EUR.pdf p.4"
+  },
+  "9": {
+   "response": "Para desactivar la conexión Bluetooth de los Joy-Con 2, debes activar el modo avión de la consola con la opción Bluetooth desactivada, ya sea en modo portátil o en modo sobremesa.\n\nFuentes: NSwitch2_Information_JoyCon2_EUR.pdf (pág. 1)",
+   "contexts": [
+    "Para activar la conexión Bluetooth, sincroniza el mando con la consola.\n  Para desactivar la conexión Bluetooth, activa el modo avión de la consola (con la opción Bluetooth desactivada) en modo \npor",
+    "Para activar la conexión Bluetooth, sincroniza el mando con la consola.\n  Para desactivar la conexión Bluetooth, activa el modo avión de la consola (con la opción Bluetooth desactivada) en modo portátil o \nmodo sobr",
+    "1.  Para activar la conexión Bluetooth, acopla los mandos a la consola para sincronizarlos.\n2.  Para desactivar la conexión Bluetooth, activa el modo avión de la consola (con la opción Bluetooth desactivada) en modo portátil \no modo sobremesa.",
+    "conexión Bluetooth por separado.\nCómo desactivar la \nconexión Bluetooth\nAbre el menú HOME en modo portátil, accede a la \n configuración de la consola ( ), activa el modo  \navión y mantén la conexión Bluetooth desactivada.",
+    "att sätta fast dem direkt i Nintendo Switch 2-konsolen (BEE-001) eller använda Joy-Con 2-laddningsgreppet (BEE-010) (båda säljs \nseparat).\nSå startar och stänger du av trådlösa nätverksanslutningar\nEnheten har en trådlös nätverksanslutning tillgänglig via Bluetooth.",
+    "Para ativar o Bluetooth, ligar o comando à consola e sincronizá-lo.\n  Para desativar o Bluetooth, ativar a função de modo de voo da consola (com o Bluetooth definido para “Não”) nos modos \npor",
+    "Para ativar o Bluetooth, ligar o comando à consola e sincronizá-lo.\n  Para desativar o Bluetooth, ativar a função de modo de voo da consola (com o Bluetooth definido para “Não”) nos modos portátil \nou de super"
+   ],
+   "sources": "NSwitch2_Information_ProController_EUR.pdf p.1; NSwitch2_NintendoGameCubeController_EUR.pdf p.1; NSwitch2_Information_JoyCon2_EUR.pdf p.1; NSwitch2_ImportantInformation_EUR.pdf p.14; NSwitch2_Information_JoyCon2_EUR.pdf p.2; NSwitch2_Information_ProController_EUR.pdf p.1; NSwitch2_NintendoGameCubeController_EUR.pdf p.1"
+  }
+ }
+}
