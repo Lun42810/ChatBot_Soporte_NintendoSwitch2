@@ -1,6 +1,7 @@
 streamlit
 groq
 python-dotenv
+requests
 langchain-core
 langchain-community
 langchain-text-splitters

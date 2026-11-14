@@ -124,3 +124,31 @@ Build Command: pip install -r requirements.txt
 Start Command (en Streamlit / Render): streamlit run app.py --server.port=$PORT --server.address=0.0.0.0
 
 Asegúrate de configurar la variable de entorno secreta GROQ_API_KEY en el panel de control de tu servicio en la nube.
+
+## Avance 3: agente RAG con herramientas
+
+La interfaz ahora llama a `agent.run_agent`, un bucle de tool calling con un máximo de 6 iteraciones por pregunta. Conserva la ingesta, Chroma y el recuperador de Avance 2.
+
+El ciclo sigue el patrón del repositorio de clase [`tools_rags`](https://github.com/lpajarof/tools_rags): el modelo selecciona una tool con `bind_tools`, el programa la ejecuta con `.invoke()` y devuelve el resultado en un `ToolMessage`. Las funciones se registran con `StructuredTool.from_function`. El ejemplo web del repositorio de clase usa Tavily y requiere `TAVILY_API_KEY`; este proyecto consulta directamente el catálogo oficial de Nintendo para no depender de esa clave.
+
+### Arquitectura y herramientas
+
+- `buscar_en_base(consulta)`: primera herramienta para preguntas sobre los manuales. Devuelve como máximo 4 fragmentos de 350 caracteres, con archivo, página y fragmento. El índice y los documentos permanecen locales; solo los resultados limitados se envían al LLM de Groq para responder.
+- `convertir_unidades(valor, desde, hacia)`: tarea determinista que convierte mm, cm, m, pulgadas, pies, °C y °F. El modelo extrae sus argumentos de la pregunta.
+- `buscar_juegos_nintendo(consulta)`: consulta el catálogo público oficial de Nintendo para títulos y datos disponibles; úsala después de revisar la base cuando pregunten por juegos, géneros, jugadores, modos o recomendaciones. Devuelve como máximo 3 resultados.
+- `comparar_juegos_nintendo(juego_a, juego_b)`: tarea de dominio que busca cada título en el mismo catálogo y prepara dos fichas comparables. Devuelve hasta 2 fichas con sus URLs oficiales. No estima precio ni características ausentes en la fuente.
+- `buscar_web(consulta)`: usa la misma fuente oficial, fija en el código en `nintendo.com`; no recibe fragmentos del corpus. La página del catálogo se descarga directamente con HTTP y sus datos estructurados se analizan localmente, sin proveedor de búsqueda ni clave adicional. La copia se mantiene en memoria durante una hora y cada llamada devuelve como máximo 3 resultados.
+
+El saludo y la charla casual se responden sin llamar al LLM ni tools. El prompt está en `agent.py`: ordena buscar primero en la base, define cuándo usar cada tool, trata el material recuperado como datos no confiables, mantiene las citas separadas (`[Fuente: documento, pág. N]` y `[web: URL]`) y conserva la respuesta exacta `No encontré información sobre esto en la base de conocimientos.` cuando no hay evidencia. El panel desplegable de cada respuesta muestra herramientas y argumentos, y presenta las fuentes por origen.
+
+Cada turno se registra como una línea JSON en `logs/agent.jsonl` (ruta configurable con `AGENT_LOG_PATH`), incluyendo nombres de tools, argumentos, cantidad de llamadas al LLM, tokens disponibles en metadatos y duración. Para evitar escribir en un disco efímero durante despliegues, define `AGENT_LOG_PATH` en un volumen persistente o usa el almacenamiento de logs de la plataforma.
+
+### Instalación y ejecución
+
+Instala dependencias con `pip install -r requirements.txt`, configura `GROQ_API_KEY` y `GROQ_MODEL` en `.env` o en los secrets del proveedor. La búsqueda del catálogo no requiere clave adicional, solo conexión a internet desde el servidor de Streamlit. No guardes claves en Git. Indexa los manuales con `python ingest.py --rebuild` y ejecuta `streamlit run app.py`.
+
+Para demostrar la tool de base sin llamar al LLM: `python tool_demo.py "¿Cómo se conecta la cámara?"`. La evaluación está en `evaluation/run_agent_eval.py`; `evaluation/behavior_cases.json` declara nueve comportamientos esperados antes de su ejecución. Ejecuta `python evaluation/run_agent_eval.py --ids 1-15 --run-behavior-cases` para correr las mismas preguntas con el pipeline fijo y con el agente, medir Ragas para ambos, guardar tools/argumentos y comparar promedios de llamadas, tokens y tiempo en `evaluation/results/agent_eval.json`. El baseline histórico completo de Avance 2 está en `evaluation/results/iteracion_chunk300_resumen.json` (20 preguntas): faithfulness 0.372, answer_relevancy 0.354, context_precision 0.617 y context_recall 0.442. Para una comparación directa debe usarse la evaluación pareada nueva con el mismo subconjunto de IDs.
+
+### Despliegue
+
+El repositorio está preparado para desplegar Streamlit en Render o Streamlit Community Cloud; configura `GROQ_API_KEY` como secreto y el comando de inicio indicado arriba. La URL pública no está configurada en este checkout todavía; añádela aquí después del despliegue: **URL de la aplicación: pendiente de despliegue**. La aplicación de Avance 2 tenía una URL pública, pero no aparece en los archivos disponibles del proyecto y no se inventa una dirección.

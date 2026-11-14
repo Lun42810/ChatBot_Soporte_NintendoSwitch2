@@ -7,7 +7,8 @@ import streamlit as st
 # Cargar configuración del .env
 load_dotenv()
 
-from rag import MAX_HISTORY_TURNS, RAGConfig, RAGError, answer_question, get_vector_store
+from rag import MAX_HISTORY_TURNS, RAGConfig, RAGError, get_vector_store
+from agent import run_agent
 
 # 1. Configuración de la página de Streamlit
 st.set_page_config(
@@ -148,6 +149,15 @@ for message in st.session_state.messages:
                             <span>{snippet_text[:350]}...</span>
                         </div>
                     """, unsafe_allow_html=True)
+        if message.get("web_sources"):
+            with st.expander(f"FUENTES WEB ({len(message['web_sources'])})"):
+                for src in message["web_sources"]:
+                    st.markdown(f"- **{src.get('title', 'Resultado web')}** · [{src.get('url', '')}]({src.get('url', '')})")
+                    st.caption(src.get("extract", ""))
+        if message.get("tool_calls"):
+            with st.expander(f"HERRAMIENTAS ({len(message['tool_calls'])})"):
+                for call in message["tool_calls"]:
+                    st.code(f"{call['name']}({call['arguments']})", language="json")
 
 # 6. Entrada del usuario
 if user_query := st.chat_input("Escribe un comando..."):
@@ -158,7 +168,7 @@ if user_query := st.chat_input("Escribe un comando..."):
 
     # Procesamiento del bot
     with st.chat_message("assistant", avatar="🕹️"):
-        with st.spinner("Buscando en los manuales..."):
+        with st.spinner("El agente está consultando sus herramientas..."):
             try:
                 history_raw = [
                     {"role": m["role"], "content": m["content"]}
@@ -166,17 +176,14 @@ if user_query := st.chat_input("Escribe un comando..."):
                 ]
                 history = _clean_history(history_raw)
 
-                # 🔹 Llamada única al pipeline RAG
-                result = answer_question(question, history)
-
-                #  Mostrar cómo el bot reformuló la pregunta de seguimiento
-                st.caption(f"🔍 Interpretación interna: {result['standalone_question']}")
+                result = run_agent(question, history)
 
                 response_text = re.sub(r"\*\*(.+?)\*\*", r"\1", result["answer"])
                 sources = result["sources"]
+                web_sources = result["web_sources"]
 
                 # Agregar las fuentes al texto para que queden en el historial
-                if sources:
+                if sources and "[Fuente:" not in response_text and "Fuentes:" not in response_text:
                     fuentes_unicas = list({src.get('source', 'Desconocido') for src in sources})
                     fuentes_texto = "\nFuentes: " + "; ".join(
                         f"{nombre} (pág. {src.get('page', '?')})"
@@ -184,6 +191,12 @@ if user_query := st.chat_input("Escribe un comando..."):
                         for src in sources if src.get('source') == nombre
                     )
                     response_text += "\n" + fuentes_texto
+                if web_sources and "[web:" not in response_text and "Fuentes web:" not in response_text:
+                    web_citations = "\nFuentes web: " + "; ".join(
+                        f"[web: {src.get('url', '')}]" for src in web_sources if src.get("url")
+                    )
+                    if web_citations.strip() != "Fuentes web:":
+                        response_text += "\n" + web_citations
 
                 st.markdown(response_text)
 
@@ -197,12 +210,23 @@ if user_query := st.chat_input("Escribe un comando..."):
                                     <span>{src.get('snippet', '')[:350]}...</span>
                                 </div>
                             """, unsafe_allow_html=True)
+                if web_sources:
+                    with st.expander(f"FUENTES WEB ({len(web_sources)})"):
+                        for src in web_sources:
+                            st.markdown(f"- **{src.get('title', 'Resultado web')}** · [{src.get('url', '')}]({src.get('url', '')})")
+                            st.caption(src.get("extract", ""))
+                if result["tool_calls"]:
+                    with st.expander(f"HERRAMIENTAS ({len(result['tool_calls'])})"):
+                        for call in result["tool_calls"]:
+                            st.code(f"{call['name']}({call['arguments']})", language="json")
 
                 # Guardar respuesta y fuentes en el estado
                 st.session_state.messages.append({
                     "role": "assistant",
                     "content": response_text,
-                    "sources": sources
+                    "sources": sources,
+                    "web_sources": web_sources,
+                    "tool_calls": result["tool_calls"]
                 })
 
             except RAGError as error:

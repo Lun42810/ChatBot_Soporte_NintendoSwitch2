@@ -3,3 +3,4 @@ chroma/
 .env
 __pycache__/
 .streamlit/
+logs/
