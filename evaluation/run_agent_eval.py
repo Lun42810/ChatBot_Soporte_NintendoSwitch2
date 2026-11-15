@@ -37,24 +37,52 @@ def main():
             selected.update(range(start, end + 1))
         else:
             selected.add(int(part))
+    path = Path(args.output); path.parent.mkdir(parents=True, exist_ok=True)
+    output = {"evaluation_model": os.getenv("GROQ_MODEL", "openai/gpt-oss-120b"),
+              "judge_model": os.getenv("RAGAS_JUDGE_MODEL", os.getenv("GROQ_MODEL", "openai/gpt-oss-120b")),
+              "question_ids": sorted(selected), "questions": [], "pipeline_fijo_questions": [],
+              "cost": {}, "ragas": {}}
+    def checkpoint():
+        path.write_text(json.dumps(output, ensure_ascii=False, indent=2), encoding="utf-8")
+    checkpoint()
     rows, costs = [], []
     for row in questions:
         if row["id"] not in selected: continue
-        result = run_agent(row["question"])
+        try:
+            result = run_agent(row["question"])
+        except Exception as error:
+            rows.append({"id": row["id"], "user_input": row["question"],
+                         "response": "", "retrieved_contexts": [], "reference": row["ground_truth"],
+                         "tools": [], "llm_calls": 0, "tokens": 0, "elapsed_seconds": 0,
+                         "error": f"{type(error).__name__}: {str(error)[:300]}"})
+            print(f"{row['id']}: ERROR {type(error).__name__}: {str(error)[:160]}")
+            output["questions"] = rows
+            checkpoint()
+            continue
         rows.append({"id": row["id"], "user_input": row["question"], "response": result["answer"],
                      "retrieved_contexts": result["contexts"], "reference": row["ground_truth"],
                      "tools": result["tool_calls"], "llm_calls": result["llm_calls"],
                      "tokens": result["tokens"], "elapsed_seconds": result["elapsed_seconds"]})
         costs.append(rows[-1])
         print(f"{row['id']}: {result['llm_calls']} llamadas, {result['tokens']} tokens, {result['elapsed_seconds']} s")
+        output["questions"] = rows
+        output["cost"]["agent"] = _averages(costs)
+        checkpoint()
     fixed_rows, fixed_cost = _fixed_pipeline_cost([row for row in questions if row["id"] in selected])
-    output = {"questions": rows, "pipeline_fijo_questions": fixed_rows,
-              "cost": {"pipeline_fijo": fixed_cost, "agent": _averages(costs)},
-              "ragas": {"pipeline_fijo": _ragas(fixed_rows), "agente": _ragas(rows)}}
+    output["pipeline_fijo_questions"] = fixed_rows
+    output["cost"]["pipeline_fijo"] = fixed_cost
+    checkpoint()
     if args.run_behavior_cases:
         output["behavior_cases"] = _run_cases()
-    path = Path(args.output); path.parent.mkdir(parents=True, exist_ok=True)
-    path.write_text(json.dumps(output, ensure_ascii=False, indent=2), encoding="utf-8")
+        checkpoint()
+    for label, dataset in (("pipeline_fijo", [row for row in fixed_rows if not row.get("error")]),
+                           ("agente", [row for row in rows if not row.get("error")])):
+        try:
+            output["ragas"][label] = _ragas(dataset)
+        except Exception as error:
+            output["ragas"][label] = {"error": f"{type(error).__name__}: {str(error)[:500]}"}
+            print(f"Ragas {label}: ERROR {type(error).__name__}: {str(error)[:180]}")
+        checkpoint()
     print(f"Resultados guardados en {path}")
 
 
@@ -80,7 +108,15 @@ def _fixed_pipeline_cost(rows):
         for row in rows:
             measured["llm_calls"] = measured["tokens"] = 0
             started = time.perf_counter()
-            result = rag.answer_question(row["question"], history=[])
+            try:
+                result = rag.answer_question(row["question"], history=[])
+            except Exception as error:
+                elapsed = time.perf_counter() - started
+                outputs.append({"id": row["id"], "user_input": row["question"],
+                                "error": f"{type(error).__name__}: {str(error)[:300]}",
+                                "llm_calls": measured["llm_calls"], "tokens": measured["tokens"],
+                                "elapsed_seconds": round(elapsed, 3)})
+                continue
             elapsed = time.perf_counter() - started
             timings.append({"llm_calls": measured["llm_calls"], "tokens": measured["tokens"],
                             "elapsed_seconds": elapsed})
@@ -105,25 +141,35 @@ def _ragas(rows):
     metrics = {"faithfulness": Faithfulness(), "answer_relevancy": ResponseRelevancy(strictness=1),
                "context_precision": LLMContextPrecisionWithReference(), "context_recall": LLMContextRecall()}
     judge = ChatGroq(model=os.getenv("RAGAS_JUDGE_MODEL", os.getenv("GROQ_MODEL", "openai/gpt-oss-120b")),
-                     temperature=0.0, api_key=os.getenv("GROQ_API_KEY"))
+                     temperature=0.0, max_tokens=int(os.getenv("RAGAS_MAX_TOKENS", "2048")),
+                     api_key=os.getenv("GROQ_API_KEY"))
     llm = LangchainLLMWrapper(judge)
     embeddings = LangchainEmbeddingsWrapper(_get_embeddings(os.getenv("EMBEDDING_MODEL", "sentence-transformers/paraphrase-multilingual-MiniLM-L12-v2")))
     for metric in metrics.values():
         metric.llm = llm
         if hasattr(metric, "embeddings"): metric.embeddings = embeddings
-        metric.init(RunConfig(timeout=240, max_retries=3, max_workers=1))
+        metric.init(RunConfig(timeout=240, max_retries=3,
+                              max_workers=int(os.getenv("RAGAS_CONCURRENCY", "3"))))
     async def score():
         out = {}
-        for row in rows:
-            sample = SingleTurnSample(user_input=row["user_input"], response=row["response"],
-                retrieved_contexts=row["retrieved_contexts"], reference=row["reference"])
-            out[row["id"]] = {}
-            for name, metric in metrics.items():
-                out[row["id"]][name] = float(await metric._single_turn_ascore(sample, []))
+        semaphore = asyncio.Semaphore(int(os.getenv("RAGAS_CONCURRENCY", "3")))
+        for row in rows: out[row["id"]] = {}
+        for name, metric in metrics.items():
+            async def score_one(row):
+                sample = SingleTurnSample(user_input=row["user_input"], response=row["response"],
+                    retrieved_contexts=row["retrieved_contexts"], reference=row["reference"])
+                async with semaphore:
+                    try:
+                        out[row["id"]][name] = float(await metric._single_turn_ascore(sample, []))
+                    except Exception as error:
+                        out[row["id"]][name] = {"error": f"{type(error).__name__}: {str(error)[:300]}"}
+            await asyncio.gather(*(score_one(row) for row in rows))
         return out
     per_question = asyncio.run(score())
-    averages = {name: round(sum(row[name] for row in per_question.values()) / len(per_question), 4)
-                for name in metrics} if per_question else {}
+    averages = {}
+    for name in metrics:
+        values = [row[name] for row in per_question.values() if isinstance(row.get(name), (int, float))]
+        if values: averages[name] = round(sum(values) / len(values), 4)
     return {"averages": averages, "per_question": per_question}
 
 
@@ -131,7 +177,12 @@ def _run_cases():
     cases = json.loads((ROOT / "evaluation" / "behavior_cases.json").read_text(encoding="utf-8"))
     out = []
     for case in cases:
-        result = run_agent(case["question"])
+        try:
+            result = run_agent(case["question"])
+        except Exception as error:
+            out.append({**case, "error": f"{type(error).__name__}: {str(error)[:300]}", "passed": False})
+            print(f"Comportamiento {case['id']}: ERROR {type(error).__name__}: {str(error)[:160]}")
+            continue
         used = [call["name"] for call in result["tool_calls"]]
         passed = all(name in used for name in case["required_tools"])
         if case["id"] == 1: passed = not used and result["llm_calls"] == 0
