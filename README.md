@@ -1,5 +1,9 @@
 # 🎮 Chatbot RAG de Soporte Técnico - Nintendo Switch 2
 
+**Repositorio:** https://github.com/Lun42810/ChatBot_Soporte_NintendoSwitch2  
+**Rama de entrega:** `codex/avance3-tools`  
+**Aplicación web:** https://nintendoavance3.streamlit.app/
+
 Aplicación web interactiva desarrollada con **Streamlit** y un diseño retro de consola, capaz de responder preguntas sobre manuales oficiales de accesorios y componentes de Nintendo Switch 2. Utiliza un pipeline de Recuperación Aumentada por Generación (RAG): busca fragmentos pertinentes en los documentos PDF mediante similitud semántica y entrega dicho contexto a un modelo de lenguaje en Groq para redactar una respuesta precisa con referencias a la fuente y la página.
 
 ---
@@ -36,7 +40,7 @@ Sentence Transformers (sentence-transformers/paraphrase-multilingual-MiniLM-L12-
 
 ChromaDB como base de datos vectorial para el almacenamiento persistente y búsqueda por distancia coseno.
 
-Groq API con el modelo qwen/qwen3.8-27b para la generación de respuestas en lenguaje natural.
+Groq API para generación de respuestas. El modelo se configura con `GROQ_MODEL` (en la configuración local de esta entrega: `openai/gpt-oss-120b`).
 
 ⚙️ Flujo RAG e Implementación Técnica
 Selección de documentos: Corpus de 10 manuales oficiales en PDF, procesados en 1,602 fragmentos (chunks).
@@ -62,7 +66,7 @@ Una API Key activa de la Groq Console.
 Pasos de Instalación
 1.Clonar el repositorio:
 
-git clone <URL_DEL_REPOSITORIO>
+git clone --branch codex/avance3-tools https://github.com/Lun42810/ChatBot_Soporte_NintendoSwitch2.git
 cd ChatBot_Soporte_NintendoSwitch2
 
 2.Crear y activar un entorno virtual:
@@ -107,7 +111,7 @@ El proyecto incluye un módulo de evaluación cuantitativa formal mediante el fr
 
 Dataset de Evaluación (evaluation/eval_questions.json): Compuesto por 20 preguntas de prueba (15 dentro del corpus de manuales y 5 casos fuera de alcance para medir control de abstención).
 
-Iteración y Comparativa: Se evaluó el impacto de activar filtros estrictos de idioma, logrando reducir abstenciones falsas y mejorando sustancialmente las métricas de relevancia de respuesta (answer_relevancy).
+Resultados de referencia de Avance 2: faithfulness 0.372, answer_relevancy 0.354, context_precision 0.617 y context_recall 0.442 (20 preguntas). En Avance 3 se realizó una muestra exploratoria de 5 preguntas con `qwen/qwen3.8-27b` como generador, `openai/gpt-oss-safeguard-20b` como juez y un solo fragmento recuperado por pregunta: faithfulness 0.527, answer_relevancy 0.619, context_precision 0.400 y context_recall 0.333. La muestra usa una configuración y un subconjunto diferentes, por lo que no demuestra una mejora frente a Avance 2.
 
 Comandos de ejecución de pruebas:
 # Ejecutar evaluación con Ragas
@@ -133,6 +137,8 @@ El ciclo sigue el patrón del repositorio de clase [`tools_rags`](https://github
 
 ### Arquitectura y herramientas
 
+El agente expone cinco tools registradas con `StructuredTool.from_function`; las herramientas que requieren parámetros usan esquemas tipados. El bucle de `agent.py` permite al LLM seleccionar y encadenar herramientas, mientras la aplicación ejecuta cada llamada mediante `.invoke()` y devuelve el resultado al modelo.
+
 - `buscar_en_base(consulta)`: primera herramienta para preguntas sobre los manuales. Devuelve como máximo 4 fragmentos de 350 caracteres, con archivo, página y fragmento. El índice y los documentos permanecen locales; solo los resultados limitados se envían al LLM de Groq para responder.
 - `convertir_unidades(valor, desde, hacia)`: tarea determinista que convierte mm, cm, m, pulgadas, pies, °C y °F. El modelo extrae sus argumentos de la pregunta.
 - `buscar_juegos_nintendo(consulta)`: consulta el catálogo público oficial de Nintendo para títulos y datos disponibles; úsala después de revisar la base cuando pregunten por juegos, géneros, jugadores, modos o recomendaciones. Devuelve como máximo 3 resultados.
@@ -151,4 +157,4 @@ Para demostrar la tool de base sin llamar al LLM: `python tool_demo.py "¿Cómo 
 
 ### Despliegue
 
-El repositorio está preparado para desplegar Streamlit en Render o Streamlit Community Cloud; configura `GROQ_API_KEY` como secreto y el comando de inicio indicado arriba. La URL pública no está configurada en este checkout todavía; añádela aquí después del despliegue: **URL de la aplicación: pendiente de despliegue**. La aplicación de Avance 2 tenía una URL pública, pero no aparece en los archivos disponibles del proyecto y no se inventa una dirección.
+La aplicación de esta entrega está desplegada en Streamlit Community Cloud: https://nintendoavance3.streamlit.app/. Configura `GROQ_API_KEY` (y opcionalmente `GROQ_MODEL`) en **Settings → Secrets** de Streamlit Cloud; no guardes claves en Git. El despliegue de la entrega usa la rama `codex/avance3-tools` del repositorio enlazado arriba.
